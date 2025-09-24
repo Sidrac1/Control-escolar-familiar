@@ -1,0 +1,1 @@
+estos querys son solamente de testeo, no usar en producción.
