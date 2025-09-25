@@ -47,4 +47,6 @@ def sendRequest():
     except Exception as e:
         return jsonify({"error":"Error al ingresar los datos al servidor","detalle:": str(e)}),400
     
-app.run(port=3690, debug=True)
+
+if __name__ == "__main__":
+    app.run(port=3690, debug=True)
