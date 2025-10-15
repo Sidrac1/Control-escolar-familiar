@@ -34,6 +34,6 @@ export function renderResults(data) {
             container.appendChild(card);
         });
     } else {
-        container.innerHTML = `<p>No se encontraron registros para los filtros seleccionados.</p>`;
+        container.innerHTML = `<p>No existen registros para los filtros seleccionados, por favor verifique la información</p>`;
     }
 }

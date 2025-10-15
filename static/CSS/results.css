@@ -54,7 +54,6 @@
     word-break: break-all;
 }
 
-/* Media query para pantallas más pequeñas si lo necesitas */
 @media (max-width: 480px) {
     .result-card {
         padding: 10px;

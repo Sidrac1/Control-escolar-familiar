@@ -37,11 +37,11 @@ def sendRequest():
 
         consult = consultarAsistencia(matricula,start_date,end_date)
         
-        # Check if an error was returned from the database function
+        # Revisa si la consulta regresó error
         if "error" in consult:
             return jsonify(consult), 400
 
-        # Format the data before sending it
+        # Formatea la información antes de enviarla
         formatted_consult = format_data(consult)
         
         return jsonify(formatted_consult)
