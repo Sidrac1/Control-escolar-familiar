@@ -4,12 +4,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <link rel="stylesheet" href="../static/CSS/index.css">
-    <link rel="stylesheet" href="../static/CSS/themes.css">
-    <link rel="stylesheet" href="../static/CSS/results.css">
+    <link rel="stylesheet" href="{{url_for('static', filename='CSS/index.css')}}">
+    <link rel="stylesheet" href="{{url_for('static', filename='CSS/themes.css')}}">
+    <link rel="stylesheet" href="{{url_for('static', filename='CSS/results.css')}}">
 
-    <script type="module" src="../static/Scripts/postForm.js"></script>
-    <script type="module" src="../static/Scripts/result.js"></script>
+    <script type="module" src="{{url_for('static', filename='Sctipts/result.js')}}"></script>
+
 
 
   <title>Consulta asistencia</title>
@@ -25,47 +25,47 @@
     <div id="search_container">
       <h1 id="search_title">Búsqueda de Asistencias</h1>
 
-<form action="/post/formulary" method="POST" id="attendance_form">
-    <div class="input-groups"> <div id="matricula_group">
-            <label for="matricula">Matrícula del alumno:</label>
-            <input 
-                type="text" 
-                id="matricula" 
-                name="matricula" 
-                placeholder="Matrícula del alumno" 
-                class="form_field"
-            >
-            <div class="error-container"></div>
-        </div>
+        <form action="/post/formulary" method="POST" id="attendance_form">
+              <div class="input-groups"> <div id="matricula_group">
+                      <label for="matricula">Matrícula del alumno:</label>
+                      <input 
+                          type="text" 
+                          id="matricula" 
+                          name="matricula" 
+                          placeholder="Matrícula del alumno" 
+                          class="form_field"
+                      >
+                      <div class="error-container"></div>
+                  </div>
 
-        <div id="date_filter_group">
-            <div id="start_group">
-                <label for="start_date">Fecha de inicio:</label>
-                <input 
-                    type="date" 
-                    id="start_date" 
-                    name="start_date" 
-                    class="form_field"
-                >
-                <div class="error-container"></div>
-            </div>
+                  <div id="date_filter_group">
+                      <div id="start_group">
+                          <label for="start_date">Fecha de inicio:</label>
+                          <input 
+                              type="date" 
+                              id="start_date" 
+                              name="start_date" 
+                              class="form_field"
+                          >
+                          <div class="error-container"></div>
+                      </div>
 
-            <div id="end_group">
-                <label for="end_date">Fecha de fin:</label>
-                <input 
-                    type="date" 
-                    id="end_date" 
-                    name="end_date" 
-                    class="form_field"
-                >
-                <div class="error-container"></div>
-            </div>
-        </div>
-    </div> <div id="buttons_container">
-        <button type="submit" id="submit_button">Buscar Asistencias</button>
-        <button type="" id="download_button">Descargar</button>
-        <button type="button" id="test_button">Testear datos desde Cona</button>    </div>
-</form>
+                      <div id="end_group">
+                          <label for="end_date">Fecha de fin:</label>
+                          <input 
+                              type="date" 
+                              id="end_date" 
+                              name="end_date" 
+                              class="form_field"
+                          >
+                          <div class="error-container"></div>
+                      </div>
+                  </div>
+              </div> <div id="buttons_container">
+                  <button type="submit" id="submit_button">Buscar Asistencias</button>
+                  <button type="" id="download_button">Descargar</button>
+                  <button type="button" id="test_button">Testear datos desde Cona</button>    </div>
+        </form>
     </div>
 
     <div id="results_container">
