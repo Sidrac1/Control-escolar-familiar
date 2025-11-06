@@ -13,7 +13,6 @@ async function cargarDatos() {
         document.getElementById('resultado').textContent = "Error: " + error.message;
     }
 }
-    console.log(data);
     document.addEventListener('DOMContentLoaded', () => {
     const testButton = document.getElementById('test_button');
     if (testButton) {
