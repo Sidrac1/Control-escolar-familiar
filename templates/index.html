@@ -9,6 +9,8 @@
     <link rel="stylesheet" href="../static/CSS/results.css">
 
     <script type="module" src="../static/Scripts/postForm.js"></script>
+    <script type="module" src="../static/Scripts/result.js"></script>
+
 
   <title>Consulta asistencia</title>
 </head>
@@ -62,11 +64,13 @@
     </div> <div id="buttons_container">
         <button type="submit" id="submit_button">Buscar Asistencias</button>
         <button type="" id="download_button">Descargar</button>
-    </div>
+        <button type="button" id="test_button">Testear datos desde Cona</button>    </div>
 </form>
     </div>
 
-    <div id="results_container"></div>
+    <div id="results_container">
+      <pre id = "resultado">Esperando datos...</pre>
+    </div>
 
   </div> <!--id="main_content"-->
 </body>

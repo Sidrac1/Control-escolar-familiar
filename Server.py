@@ -1,6 +1,7 @@
 from flask import Flask, request, jsonify, render_template,redirect, url_for
-from controladorbd import consultarAsistencia
 from datetime import date, timedelta
+from flask_cors import CORS
+import json
 
 def format_data(data):
     formatted_data = []
@@ -21,33 +22,29 @@ def format_data(data):
 
 
 app = Flask(__name__)
+CORS(app)
 
+event_data = {}
 
 @app.route("/")
 def main():
     return render_template("index.html")
 
-@app.route ("/post/formulary", methods=["POST", "GET"])
-def sendRequest():
+@app.route ('/lectura', methods=['POST'])
+def recibir_eventos():
     try:
-        req_json = request.get_json()
-        matricula = req_json["matricula"]
-        start_date = req_json["start_date"]
-        end_date = req_json["end_date"]
-
-        consult = consultarAsistencia(matricula,start_date,end_date)
-        
-        # Revisa si la consulta regresó error
-        if "error" in consult:
-            return jsonify(consult), 400
-
-        # Formatea la información antes de enviarla
-        formatted_consult = format_data(consult)
-        
-        return jsonify(formatted_consult)
+        data = request.json or request.form
+        if 'AccessControllerEvent' in data:
+            global event_data
+            event_data = data['AccessControllerEvent']
+            return jsonify({'status': 'evento recibido y almacenado'}),200
+        return jsonify({"error":"no se encontró el campo AccessControllerEvent"}),400
     except Exception as e:
-        return jsonify({"error":"Error al ingresar los datos al servidor","detalle:": str(e)}),400
-    
+        return jsonify({"error": "Error al procesar la solicitud", "detalle":str(e)}),400
 
-if __name__ == "__main__":
-    app.run(port=3690, debug=True)
+@app.route ('/lectura', methods=['GET'])
+def mostrar_evento():
+    if event_data:
+        return jsonify(event_data)
+    else:
+        return jsonify({"mensaje": "No se han recibido datos"}),404

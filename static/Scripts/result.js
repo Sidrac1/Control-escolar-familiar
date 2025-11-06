@@ -1,39 +1,22 @@
-export function renderResults(data) {
-    const container = document.getElementById("results_container");
-    container.innerHTML = ""; // Limpiar contenido previo
+//toda esta función es para llamar a la información desde el servidor y ponerla en la web
+const domain = "https://control-escolar-familiar.onrender.com"
+const url = "/lectura"
 
-    if (data.error) {
-        container.innerHTML = `<p class="error">⚠️ ${data.error}<br>${data["detalle:"]}</p>`;
-        return;
+async function cargarDatos() {
+    try{
+        const response = await fetch (`${domain}/${url}`);
+        if(!response.ok) throw new Error("Error al obtener los datos");
+        const data = await response.json();
+        document.getElementById('resultado').textContent = JSON.stringify(data, null, 2);
     }
-
-    if (Array.isArray(data) && data.length > 0) {
-        data.forEach(result => {
-            const card = document.createElement("div");
-            card.classList.add("result-card");
-
-            const list = document.createElement("ul");
-
-            for (const key in result) {
-                if (result.hasOwnProperty(key)) {
-                    const listItem = document.createElement("li");
-                    const labelSpan = document.createElement("span");
-                    labelSpan.classList.add("card-label");
-                    labelSpan.textContent = key.replace(/_/g, ' ') + ":"; // Reemplaza guiones bajos por espacios
-                    
-                    const valueSpan = document.createElement("span");
-                    valueSpan.classList.add("card-value");
-                    valueSpan.textContent = result[key];
-                    
-                    listItem.appendChild(labelSpan);
-                    listItem.appendChild(valueSpan);
-                    list.appendChild(listItem);
-                }
-            }
-            card.appendChild(list);
-            container.appendChild(card);
-        });
-    } else {
-        container.innerHTML = `<p>No existen registros para los filtros seleccionados, por favor verifique la información</p>`;
+    catch (error){
+        document.getElementById('resultado').textContent = "Error: " + error.message;
     }
 }
+    console.log(data);
+    document.addEventListener('DOMContentLoaded', () => {
+    const testButton = document.getElementById('test_button');
+    if (testButton) {
+        testButton.addEventListener('click', cargarDatos);
+    }
+});
