@@ -1,6 +1,6 @@
 //toda esta función es para llamar a la información desde el servidor y ponerla en la web
 const domain = "https://control-escolar-familiar.onrender.com"
-const url = "/lectura"
+const url = "lectura"
 
 async function cargarDatos() {
     try{
