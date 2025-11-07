@@ -1,5 +1,4 @@
-//toda esta función es para llamar a la información desde el servidor y ponerla en la web
-
+// Toda esta función es para llamar a la información desde el servidor y ponerla en la web
 async function cargarDatos() {
     const domain = "https://control-escolar-familiar.onrender.com"
     try{
@@ -13,7 +12,7 @@ async function cargarDatos() {
         document.getElementById('resultado').textContent = "Error: " + error.message;
     }
 }
-    document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', () => {
     const testButton = document.getElementById('test_button');
     if (testButton) {
         testButton.addEventListener('click', cargarDatos);
