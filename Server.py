@@ -31,27 +31,23 @@ def main():
     return render_template("index.html")
 
 @app.route('/lectura', methods=['POST'])
-def recibir_eventos():
-    try:
-        raw_event = request.form.get("event_log")
-        if raw_event:
-            parsed_event = json.loads(raw_event)
-            if 'AccessControllerEvent' in parsed_event:
-                global event_data
-                event_data = parsed_event['AccessControllerEvent']
-                return jsonify({'status': 'evento recibido y almacenado'}), 200
-            return jsonify({"error": "no se encontró el campo AccessControllerEvent"}), 400
-        return jsonify({"error": "No se recibió el campo event_log"}), 400
-    except Exception as e:
-        return jsonify({"error": "Error al procesar la solicitud", "detalle": str(e)}), 400
+def recibir_evento():
+    raw_json = request.form.get('AccessControllerEvent')
+    if raw_json:
+        try:
+            global event_data
+            event_data = json.loads(raw_json)
+            return jsonify({"status": "recibido"}), 200
+        except Exception as e:
+            return jsonify({"error": str(e)}), 400
+    return jsonify({"error": "No se encontró el campo AccessControllerEvent"}), 400
 
-
-@app.route ('/lectura', methods=['GET'])
-def mostrar_eventos():
+@app.route('/lectura', methods=['GET'])
+def mostrar_evento():
     if event_data:
         return jsonify(event_data)
     else:
-        return jsonify({"mensaje": "No se han recibido datos"}),404
+        return jsonify({"mensaje": "No hay datos disponibles"}), 404
 
 if __name__ == "__main__":
     app.run(debug=True)
