@@ -57,8 +57,11 @@ def recibir_eventos():
 @app.route('/lectura', methods=['GET'])
 def mostrar_eventos():
     if event_data:
-        return jsonify(event_data)
+        return jsonify(event_data), 200
     else:
-        return jsonify({"mensaje": "No se han recibido datos"}), 404
+        return jsonify({"mensaje": "No se han recibido datos"}), 200 
+    
+
+
 if __name__ == "__main__":
     app.run(debug=True)
