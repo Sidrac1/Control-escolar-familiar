@@ -9,49 +9,12 @@
 }
 
 
-.result-card {
-    background-color: var(--result);
-    border-radius: 8px;
-    padding: 15px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    width: calc(100% - 5%);
-    box-sizing: border-box;
-    display: flex;
-    justify-content: flex-start;
-}
-
-/* Estilo para la lista dentro de la tarjeta */
-.result-card ul {
-    list-style-type: none;
-    padding: 0;
-    margin: 0;
-}
-
-/* Estilo para cada fila de datos */
-.result-card li {
-    display: flex;
-    justify-content: space-between;
-    padding: 5px 0;
-    border-bottom: 1px solid var(--border-color);
-}
-
-.result-card li:last-child {
-    border-bottom: none; /* Elimina la línea en el último elemento */
-}
-
-/* Estilo para la etiqueta (ej. "Matricula") */
-.card-label {
-    font-weight: bold;
-    color: var(--label-color);
-    margin-right: 10px;
-    text-transform: capitalize;
-}
-
-/* Estilo para el valor */
-.card-value {
-    color: var(--value-color);
-    text-align: right;
-    word-break: break-all;
+#resultado{
+    color: black;
+    background-color: white;
+    width: calc(100% - 20px);
+    height: auto;
+    padding: 20px;
 }
 
 @media (max-width: 480px) {
