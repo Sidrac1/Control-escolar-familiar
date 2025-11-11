@@ -15,3 +15,7 @@ def consultarAsistencia(matricula,fecha_inicio,fecha_fin):
     finally:
         if connection:
             connection.close()
+
+
+
+            
