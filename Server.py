@@ -19,7 +19,20 @@ def recibir_eventos():
         if raw_event:
             parsed_event = json.loads(raw_event.encode().decode("utf-8-sig"))
             todos_los_eventos.append(parsed_event)
-            return jsonify({'status': 'evento recibido'}), 200
+
+            # Verifica si es un evento filtrado
+            evento = parsed_event.get("AccessControllerEvent", {})
+            if (
+                parsed_event.get("eventType") == "AccessControllerEvent" and
+                evento.get("majorEventType") == 5 and
+                evento.get("subEventType") == 75
+            ):
+                return jsonify({'status': 'evento filtrado y almacenado'}), 200
+            else:
+                print("Evento no filtrado recibido:")
+                print(json.dumps(parsed_event, indent=2, ensure_ascii=False))
+                return jsonify({'status': 'evento no filtrado, solo registrado'}), 200
+
         return jsonify({"error": "No se recibió el campo event_log"}), 400
     except Exception as e:
         return jsonify({"error": "Error al procesar la solicitud", "detalle": str(e)}), 400
