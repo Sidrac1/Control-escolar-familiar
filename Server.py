@@ -5,7 +5,8 @@ import json
 app = Flask(__name__)
 CORS(app)
 
-event_data = []
+# Almacena todos los eventos recibidos
+todos_los_eventos = []
 
 @app.route("/")
 def main():
@@ -17,26 +18,24 @@ def recibir_eventos():
         raw_event = request.form.get("event_log")
         if raw_event:
             parsed_event = json.loads(raw_event.encode().decode("utf-8-sig"))
-            evento = parsed_event.get("AccessControllerEvent", {})
-            if (
-                parsed_event.get("eventType") == "AccessControllerEvent" and
-                evento.get("majorEventType") == 5 and
-                evento.get("subEventType") == 75
-            ):
-                event_data.append({
-                    "dateTime": parsed_event.get("dateTime"),
-                    "name": evento.get("name"),
-                    "employeeNoString": evento.get("employeeNoString")
-                })
-                return jsonify({'status': 'evento filtrado y almacenado'}), 200
-            return jsonify({'status': 'evento ignorado por no cumplir criterios'}), 200
+            todos_los_eventos.append(parsed_event)
+            return jsonify({'status': 'evento recibido'}), 200
         return jsonify({"error": "No se recibió el campo event_log"}), 400
     except Exception as e:
         return jsonify({"error": "Error al procesar la solicitud", "detalle": str(e)}), 400
 
 @app.route('/lectura', methods=['GET'])
-def mostrar_eventos():
-    return jsonify(event_data if event_data else {"mensaje": "No se han recibido datos"}), 200
+def mostrar_eventos_filtrados():
+    filtrados = []
+    for evento in todos_los_eventos:
+        e = evento.get("AccessControllerEvent", {})
+        if evento.get("eventType") == "AccessControllerEvent" and e.get("majorEventType") == 5 and e.get("subEventType") == 75:
+            filtrados.append({
+                "dateTime": evento.get("dateTime"),
+                "name": e.get("name"),
+                "employeeNoString": e.get("employeeNoString")
+            })
+    return jsonify(filtrados if filtrados else {"mensaje": "No hay eventos filtrados"}), 200
 
 if __name__ == "__main__":
     app.run(debug=True)
