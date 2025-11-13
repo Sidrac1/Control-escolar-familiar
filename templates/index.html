@@ -1,20 +1,15 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <link rel="stylesheet" href="{{url_for('static', filename='CSS/index.css')}}">
-    <link rel="stylesheet" href="{{url_for('static', filename='CSS/themes.css')}}">
-    <link rel="stylesheet" href="{{url_for('static', filename='CSS/results.css')}}">
-
-    <script type="module" src="{{url_for('static', filename='Scripts/result.js')}}"></script>
-
-
-
   <title>Consulta asistencia</title>
-</head>
 
+  <link rel="stylesheet" href="{{url_for('static', filename='CSS/index.css')}}">
+  <link rel="stylesheet" href="{{url_for('static', filename='CSS/themes.css')}}">
+  <link rel="stylesheet" href="{{url_for('static', filename='CSS/results.css')}}">
+  <script type="module" src="{{url_for('static', filename='Scripts/result.js')}}"></script>
+</head>
 <body>
   <div id="header_area">
     <img src="{{ url_for('static', filename='Images/SEP_Logo.png') }}" alt="SEP Logo" id="logo1">
@@ -24,55 +19,33 @@
   <div id="main_content">
     <div id="search_container">
       <h1 id="search_title">Búsqueda de Asistencias</h1>
-
-        <form action="/post/formulary" method="POST" id="attendance_form">
-              <div class="input-groups"> <div id="matricula_group">
-                      <label for="matricula">Matrícula del alumno:</label>
-                      <input 
-                          type="text" 
-                          id="matricula" 
-                          name="matricula" 
-                          placeholder="Matrícula del alumno" 
-                          class="form_field"
-                      >
-                      <div class="error-container"></div>
-                  </div>
-
-                  <div id="date_filter_group">
-                      <div id="start_group">
-                          <label for="start_date">Fecha de inicio:</label>
-                          <input 
-                              type="date" 
-                              id="start_date" 
-                              name="start_date" 
-                              class="form_field"
-                          >
-                          <div class="error-container"></div>
-                      </div>
-
-                      <div id="end_group">
-                          <label for="end_date">Fecha de fin:</label>
-                          <input 
-                              type="date" 
-                              id="end_date" 
-                              name="end_date" 
-                              class="form_field"
-                          >
-                          <div class="error-container"></div>
-                      </div>
-                  </div>
-              </div> <div id="buttons_container">
-                  <button type="submit" id="submit_button">Buscar Asistencias</button>
-                  <button type="" id="download_button">Descargar</button>
-                  <button type="button" id="test_button">Testear datos desde Cona</button>    </div>
-        </form>
+      <form id="attendance_form">
+        <div class="input-groups">
+          <div id="matricula_group">
+            <label for="matricula">Matrícula del alumno:</label>
+            <input type="text" id="matricula" name="matricula" placeholder="Matrícula del alumno" class="form_field">
+          </div>
+          <div id="date_filter_group">
+            <div id="start_group">
+              <label for="start_date">Fecha de inicio:</label>
+              <input type="date" id="start_date" name="start_date" class="form_field">
+            </div>
+            <div id="end_group">
+              <label for="end_date">Fecha de fin:</label>
+              <input type="date" id="end_date" name="end_date" class="form_field">
+            </div>
+          </div>
+        </div>
+        <div id="buttons_container">
+          <button type="submit" id="submit_button">Buscar Asistencias</button>
+          <button type="button" id="test_button">Testear datos desde Cona</button>
+        </div>
+      </form>
     </div>
 
     <div id="results_container">
-      <pre id = "resultado">Esperando datos...</pre>
+      <pre id="resultado">Esperando datos...</pre>
     </div>
-
-  </div> <!--id="main_content"-->
+  </div>
 </body>
-
 </html>

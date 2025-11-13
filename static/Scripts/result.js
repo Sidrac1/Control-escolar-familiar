@@ -1,26 +1,5 @@
-async function cargarDatos() {
-    const domain = "https://control-escolar-familiar.onrender.com"
-    try{
-        const response = await fetch (`${domain}/lectura`);
-        
-        if(!response.ok) throw new Error("Error al obtener los datos");
-        const data = await response.json();
-        document.getElementById('resultado').textContent = JSON.stringify(data, null, 2);
-    }
-    catch (error){
-        document.getElementById('resultado').textContent = "Error: " + error.message;
-    }
-}
-document.addEventListener('DOMContentLoaded', () => {
-    const testButton = document.getElementById('test_button');
-    if (testButton) {
-        testButton.addEventListener('click', cargarDatos);
-    }
-});
-
-/* 
 async function cargarDatosConFiltros(event) {
-    if (event) event.preventDefault(); // Solo si viene de un submit
+    if (event) event.preventDefault();
 
     const domain = "https://control-escolar-familiar.onrender.com";
     const matricula = document.getElementById("matricula")?.value.trim();
@@ -38,12 +17,6 @@ async function cargarDatosConFiltros(event) {
         }
 
         const data = await response.json();
-
-        // Si el backend devuelve un objeto con "mensaje", no hay datos
-        if (!data || typeof data !== "object") {
-            container.textContent = "Respuesta inválida del servidor.";
-            return;
-        }
 
         if ("mensaje" in data) {
             container.textContent = data.mensaje;
@@ -98,4 +71,3 @@ document.addEventListener("DOMContentLoaded", () => {
     // Carga inicial sin filtros
     cargarDatosConFiltros();
 });
-*/
