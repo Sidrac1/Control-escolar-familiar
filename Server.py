@@ -32,7 +32,7 @@ def main():
 
 @app.route('/lectura', methods=['POST'])
 def recibir_evento():
-    raw_json = request.form.get('AccessControllerEvent')
+    raw_json = request.form.get('event_log')
     if raw_json:
         try:
             global event_data
