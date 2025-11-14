@@ -16,22 +16,24 @@ app.config["MONGO_URI"] = os.getenv("MONGO_URI")
 #Initialize PyMongo:
 mongo = PyMongo(app)
 
-print("URI cargada desde .env:", os.getenv("MONGO_URI"))
-
 if mongo.db is None:
-    print("❌ Error: No se pudo conectar a MongoDB. Verifica la URI.")
+    print("Error: No se pudo conectar a MongoDB.")
 else:
-    print("✅ Conectado a MongoDB:", app.config["MONGO_URI"])
+    print("Conexión con Base de datos exitosa :D")
 
 
 @app.route("/")
 def main():
     return render_template("index.html")
 
+
 @app.route('/lectura', methods=['POST'])
 def recibir_evento():
     try:
-        parsed_event = request.get_json()
+        print("Headers:", request.headers)
+        print("Raw body: ", request.data)
+        parsed_event = request.get_json(force=True, silent=True)
+        print ("Parsed Json:", parsed_event)
 
         evento = parsed_event.get("AccessControllerEvent",{})
         major = evento.get("majorEventType")
