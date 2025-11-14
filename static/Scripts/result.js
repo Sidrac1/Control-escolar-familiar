@@ -11,7 +11,7 @@ document.getElementById('attendance_form').addEventListener('submit', async (eve
     if(end_date) params.append('end', end_date);
 
     try{
-        const response = await fetch(`http://localhost:5000/lectura?${params.toString()}`);
+        const response = await fetch(`https://control-escolar-familiar.onrender.com/lectura?${params.toString()}`);
         const data = await response.json();
 
         const container = document.getElementById('resultado');
