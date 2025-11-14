@@ -30,62 +30,41 @@ def main():
 @app.route('/lectura', methods=['POST'])
 def recibir_evento():
     try:
-        print("🔍 Content-Type recibido:", request.content_type)
-
         parsed_event = None
 
-        # Si el contenido es multipart/form-data
+        # Detectar si viene como multipart/form-data
         if request.content_type.startswith("multipart/form-data"):
-            print("📦 Campos recibidos en form-data:")
-            for key in request.form:
-                print(f"  {key}: {request.form[key]}")
-
-            # Si el JSON viene en un campo llamado "data"
             raw_json = request.form.get("data")
             if raw_json:
-                try:
-                    parsed_event = json.loads(raw_json)
-                    print("✅ JSON extraído del campo 'data':", parsed_event)
-                except Exception as e:
-                    print("❌ Error al convertir 'data' a JSON:", str(e))
-                    return jsonify({"error": "Formato JSON inválido en campo 'data'"}), 400
+                parsed_event = json.loads(raw_json)
             else:
-                # Si los campos individuales forman el JSON directamente
                 parsed_event = dict(request.form)
-                print("✅ JSON reconstruido desde campos individuales:", parsed_event)
         else:
-            # Si viene como application/json
             parsed_event = request.get_json(force=True, silent=True)
-            print("✅ JSON recibido directamente:", parsed_event)
 
-        if not parsed_event or len(parsed_event) == 0:
+        if not parsed_event:
             return jsonify({"message": "registro vacío"}), 400
 
-        evento = parsed_event.get("AccessControllerEvent", {})
-
-        # Si 'AccessControllerEvent' viene como string, convertirlo a dict
+        # Convertir AccessControllerEvent si viene como string
+        evento = parsed_event.get("AccessControllerEvent")
         if isinstance(evento, str):
-            try:
-                evento = json.loads(evento)
-                parsed_event["AccessControllerEvent"] = evento
-                print("🔄 'AccessControllerEvent' convertido de string a dict")
-            except Exception as e:
-                print("❌ Error al parsear 'AccessControllerEvent':", str(e))
-                return jsonify({"error": "AccessControllerEvent no es un JSON válido"}), 400
+            evento = json.loads(evento)
+            parsed_event["AccessControllerEvent"] = evento
 
+        # Verificar tipos de evento
         major = evento.get("majorEventType")
         sub = evento.get("subEventType")
 
-        if major != 5 or sub != 75:
-            mongo.db.logsOtros.insert_one(parsed_event)
-            return jsonify({"message": "evento recibido pero filtrado a otros eventos"}), 200
-        else:
+        if major == 5 and sub == 75:
             mongo.db.logsAcceso.insert_one(parsed_event)
             return jsonify({"message": "evento de acceso correcto"}), 200
+        else:
+            mongo.db.logsOtros.insert_one(parsed_event)
+            return jsonify({"message": "evento recibido pero filtrado a otros eventos"}), 200
 
     except Exception as e:
-        print("❌ Error general:", str(e))
         return jsonify({"error": str(e)}), 400
+
 
 
 
