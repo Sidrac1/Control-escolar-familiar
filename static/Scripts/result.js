@@ -1,4 +1,43 @@
-async function cargarDatos() {
+document.getElementById('attendance_form').addEventListener('submit', async (event) =>{
+    event.preventDefault();
+
+    const matricula = document.getElementById('matricula').value.trim();
+    const start_date = document.getElementById('start_date').value;
+    const end_date = document.getElementById('end_date').value;
+
+    const params =new URLSearchParams();
+    if(matricula) params.append('matricula', matricula);
+    if(start_date) params.append('start', start_date);
+    if(end_date) params.append('end', end_date);
+
+    try{
+        const response = await fetch(`http://localhost:5000/lectura?${params.toString()}`);
+        const data = await response.json();
+
+        const container = document.getElementById('resultado');
+        container.innerHTML="";
+
+        if (data.length === 0 || data.message){
+            container.textContent = ("No se encontraron resultados para la búsqueda")
+            return;
+        }
+
+    data.forEach((evento, index) => {
+      const div = document.createElement("div");
+      div.innerHTML = `
+        <p><strong>Nombre:</strong> ${evento.name}</p>
+        <p><strong>Matrícula:</strong> ${evento.employeeNoString}</p>
+        <p><strong>Fecha:</strong> ${evento.dateTime?.split("T")[0]}</p>
+        <hr>`;
+      container.appendChild(div);
+    });
+    }
+    catch(error){
+        document.getElementById('resultado').textContent = "Error "+ error.message;
+    }
+});
+
+/*async function cargarDatos() {
     const domain = "https://control-escolar-familiar.onrender.com"
     try{
         const response = await fetch (`${domain}/lectura`);

@@ -1,30 +1,28 @@
 from flask import Flask, request, jsonify, render_template,redirect, url_for
-from datetime import date, timedelta
 from flask_cors import CORS
 import json
+from flask_pymongo import PyMongo
+from pymongo.server_api import ServerApi
+from dotenv import load_dotenv
+import os
 
-def format_data(data):
-    formatted_data = []
-    for row in data:
-        new_row = {}
-        for key, value in row.items():
-            if isinstance(value, date):
-                new_row[key] = value.isoformat()
-            elif isinstance(value, timedelta):
-                total_seconds = int(value.total_seconds())
-                hours, remainder = divmod(total_seconds, 3600)
-                minutes, seconds = divmod(remainder, 60)
-                new_row[key] = f"{hours:02}:{minutes:02}:{seconds:02}"
-            else:
-                new_row[key] = value
-        formatted_data.append(new_row)
-    return formatted_data
-
+load_dotenv()
 
 app = Flask(__name__)
 CORS(app)
 
-event_data = []
+#configure mongo URI
+app.config["MONGO_URI"] = os.getenv("MONGO_URI")
+#Initialize PyMongo:
+mongo = PyMongo(app)
+
+print("URI cargada desde .env:", os.getenv("MONGO_URI"))
+
+if mongo.db is None:
+    print("❌ Error: No se pudo conectar a MongoDB. Verifica la URI.")
+else:
+    print("✅ Conectado a MongoDB:", app.config["MONGO_URI"])
+
 
 @app.route("/")
 def main():
@@ -32,23 +30,61 @@ def main():
 
 @app.route('/lectura', methods=['POST'])
 def recibir_evento():
-    raw_json = request.form.get('event_log')
-    if raw_json:
-        try:
-            global event_data
-            event_data = json.loads(raw_json)
-            return jsonify({"status": "recibido"}), 200
-        except Exception as e:
-            return jsonify({"error": str(e)}), 400
-    return jsonify({"error": "No se encontró el campo AccessControllerEvent"}), 400
+    try:
+        parsed_event = request.get_json()
+
+        evento = parsed_event.get("AccessControllerEvent",{})
+        major = evento.get("majorEventType")
+        sub = evento.get("subEventType")
+
+        if not parsed_event or len(parsed_event)==0:
+            return jsonify({"message": "registro vacío"}),400
+        
+        if ( major != 5 or sub != 75 ):
+            mongo.db.logsOtros.insert_one(parsed_event)
+            return jsonify({"message":"evento recibido pero filtrado a otros eventos"}),200
+        
+        else:
+            mongo.db.logsAcceso.insert_one(parsed_event)
+            return jsonify({"message":"evento de acceso correcto"}),200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 400
 
 
 @app.route('/lectura', methods=['GET'])
 def mostrar_evento():
-    if event_data:
-        return jsonify(event_data)
-    else:
-        return jsonify({"mensaje": "No hay datos disponibles"}), 200
+    query = {
+        "AccessControllerEvent.majorEventType": 5,
+        "AccessControllerEvent.subEventType": 75
+    }
+
+    matricula = request.args.get("matricula") #este dato lo toma del JS que envía la matricula com URL parameter
+    start = request.args.get("start")
+    end = request.args.get("end")
+
+    if matricula:
+        query["AccessControllerEvent.employeeNoString"] = matricula
+
+    if start or end:
+        rango = {}
+        if start:
+            rango["$gte"] = start
+        if end:
+            rango["$lte"] = end
+        query["dateTime"] = rango
+
+    eventos = mongo.db.logsAcceso.find(query, {"_id": 0})
+    resultados = []
+    for e in eventos:
+        ac = e.get("AccessControllerEvent", {})
+        resultados.append({
+            "dateTime": e.get("dateTime"),
+            "name": ac.get("name"),
+            "employeeNoString": ac.get("employeeNoString")
+        })
+    print("Consulta Mongo:", query)
+    return jsonify(resultados), 200
+
 
 if __name__ == "__main__":
     app.run(debug=True)
