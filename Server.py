@@ -46,18 +46,28 @@ def recibir_evento():
             return jsonify({"message": "registro vacío"}), 400
 
         # Convertir AccessControllerEvent si viene como string
-        evento = parsed_event.get("AccessControllerEvent")
-        if isinstance(evento, str):
-            evento = json.loads(evento)
+        evento_raw = parsed_event.get("AccessControllerEvent")
+        if isinstance(evento_raw, str):
+            evento = json.loads(evento_raw)
             parsed_event["AccessControllerEvent"] = evento
+        elif isinstance(evento_raw, dict):
+            evento = evento_raw
+        else:
+            return jsonify({"error": "AccessControllerEvent no tiene formato válido"}), 400
 
-        # Convertir valores a enteros antes de comparar
+        # Acceder al subobjeto AccessControllerEvent
+        evento_interno = evento.get("AccessControllerEvent")
+        if not isinstance(evento_interno, dict):
+            return jsonify({"error": "AccessControllerEvent interno no encontrado"}), 400
+
+        # Extraer y convertir los tipos de evento
         try:
-            major = int(evento.get("majorEventType", -1))
-            sub = int(evento.get("subEventType", -1))
+            major = int(evento_interno.get("majorEventType", -1))
+            sub = int(evento_interno.get("subEventType", -1))
         except (ValueError, TypeError):
             major, sub = -1, -1
 
+        # Insertar en la colección correspondiente
         if major == 5 and sub == 75:
             mongo.db.logsAcceso.insert_one(parsed_event)
             return jsonify({"message": "evento de acceso correcto"}), 200
@@ -67,8 +77,6 @@ def recibir_evento():
 
     except Exception as e:
         return jsonify({"error": str(e)}), 400
-
-
 
 
 
