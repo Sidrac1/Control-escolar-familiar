@@ -34,6 +34,7 @@ def recibir_evento():
 
         parsed_event = None
 
+        # Si el contenido es multipart/form-data
         if request.content_type.startswith("multipart/form-data"):
             print("📦 Campos recibidos en form-data:")
             for key in request.form:
@@ -52,8 +53,8 @@ def recibir_evento():
                 # Si los campos individuales forman el JSON directamente
                 parsed_event = dict(request.form)
                 print("✅ JSON reconstruido desde campos individuales:", parsed_event)
-
         else:
+            # Si viene como application/json
             parsed_event = request.get_json(force=True, silent=True)
             print("✅ JSON recibido directamente:", parsed_event)
 
@@ -61,6 +62,17 @@ def recibir_evento():
             return jsonify({"message": "registro vacío"}), 400
 
         evento = parsed_event.get("AccessControllerEvent", {})
+
+        # Si 'AccessControllerEvent' viene como string, convertirlo a dict
+        if isinstance(evento, str):
+            try:
+                evento = json.loads(evento)
+                parsed_event["AccessControllerEvent"] = evento
+                print("🔄 'AccessControllerEvent' convertido de string a dict")
+            except Exception as e:
+                print("❌ Error al parsear 'AccessControllerEvent':", str(e))
+                return jsonify({"error": "AccessControllerEvent no es un JSON válido"}), 400
+
         major = evento.get("majorEventType")
         sub = evento.get("subEventType")
 
@@ -74,6 +86,7 @@ def recibir_evento():
     except Exception as e:
         print("❌ Error general:", str(e))
         return jsonify({"error": str(e)}), 400
+
 
 
 
