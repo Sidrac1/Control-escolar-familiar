@@ -51,9 +51,12 @@ def recibir_evento():
             evento = json.loads(evento)
             parsed_event["AccessControllerEvent"] = evento
 
-        # Verificar tipos de evento
-        major = evento.get("majorEventType")
-        sub = evento.get("subEventType")
+        # Convertir valores a enteros antes de comparar
+        try:
+            major = int(evento.get("majorEventType", -1))
+            sub = int(evento.get("subEventType", -1))
+        except (ValueError, TypeError):
+            major, sub = -1, -1
 
         if major == 5 and sub == 75:
             mongo.db.logsAcceso.insert_one(parsed_event)
@@ -64,6 +67,7 @@ def recibir_evento():
 
     except Exception as e:
         return jsonify({"error": str(e)}), 400
+
 
 
 
