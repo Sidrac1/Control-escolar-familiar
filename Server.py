@@ -30,10 +30,15 @@ def main():
 @app.route('/lectura', methods=['POST'])
 def recibir_evento():
     try:
-        print("Headers:", request.headers)
-        print("Raw body: ", request.data)
-        parsed_event = request.get_json(force=True, silent=True)
-        print ("Parsed Json:", parsed_event)
+        if request.content_type.startswith("multipart/form-data"):
+            raw_json = request.form.get("data")
+            if not raw_json:
+                return jsonify({"Error": "no se encontró el campo 'data en el formulario"}),400
+            parsed_event = json.loads(raw_json)
+        else:
+            parsed_event = request.get_json(force=True, silent=True)
+        if not parsed_event:
+            return jsonify({"message": "registro vacío"}),400
 
         evento = parsed_event.get("AccessControllerEvent",{})
         major = evento.get("majorEventType")
