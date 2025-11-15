@@ -1,41 +1,54 @@
-document.getElementById('attendance_form').addEventListener('submit', async (event) =>{
-    event.preventDefault();
+document.getElementById('attendance_form').addEventListener('submit', async (event) => {
+  event.preventDefault();
 
-    const matricula = document.getElementById('matricula').value.trim();
-    const start_date = document.getElementById('start_date').value;
-    const end_date = document.getElementById('end_date').value;
+  const matricula = document.getElementById('matricula').value.trim();
+  const start_date = document.getElementById('start_date').value;
+  const end_date = document.getElementById('end_date').value;
 
-    const params =new URLSearchParams();
-    if(matricula) params.append('matricula', matricula);
-    if(start_date) params.append('start', start_date);
-    if(end_date) params.append('end', end_date);
+  let url = "https://control-escolar-familiar.onrender.com/lectura";
+  const params = new URLSearchParams();
 
-    try{
-        const response = await fetch(`https://control-escolar-familiar.onrender.com/lectura?${params.toString()}`);
-        const data = await response.json();
+  if (matricula) params.append("matricula", matricula);
+  if (start_date) params.append("start", start_date);
+  if (end_date) params.append("end", end_date);
 
-        const container = document.getElementById('resultado');
-        container.innerHTML="";
+  if ([...params].length > 0) {
+    url += `?${params.toString()}`;
+  }
 
-        if (data.length === 0 || data.message){
-            container.textContent = ("No se encontraron resultados para la búsqueda")
-            return;
-        }
+  try {
+    const response = await fetch(url);
+    const data = await response.json();
+
+    const container = document.getElementById('resultado');
+    container.innerHTML = "";
+
+    if (!Array.isArray(data) || data.length === 0 || data.message) {
+      container.textContent = "No se encontraron resultados para la búsqueda";
+      return;
+    }
 
     data.forEach((evento, index) => {
-      const div = document.createElement("div");
-      div.innerHTML = `
+    const div = document.createElement("div");
+    div.classList.add("result-card");
+
+    div.innerHTML = `
+        <div class="card-header">
+        <span class="card-date">${evento.dateTime?.split("T")[0]}</span>
+        </div>
+        <div class="card-body">
         <p><strong>Nombre:</strong> ${evento.name}</p>
         <p><strong>Matrícula:</strong> ${evento.employeeNoString}</p>
-        <p><strong>Fecha:</strong> ${evento.dateTime?.split("T")[0]}</p>
-        <hr>`;
-      container.appendChild(div);
+        </div>
+    `;
+    container.appendChild(div);
     });
-    }
-    catch(error){
-        document.getElementById('resultado').textContent = "Error "+ error.message;
-    }
+
+  } catch (error) {
+    document.getElementById('resultado').textContent = "Error: " + error.message;
+  }
 });
+
 
 /*async function cargarDatos() {
     const domain = "https://control-escolar-familiar.onrender.com"

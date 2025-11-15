@@ -83,36 +83,41 @@ def recibir_evento():
 
 @app.route('/lectura', methods=['GET'])
 def mostrar_evento():
-    query = {
-        "AccessControllerEvent.majorEventType": 5,
-        "AccessControllerEvent.subEventType": 75
-    }
+    query = {}
 
-    matricula = request.args.get("matricula") #este dato lo toma del JS que envía la matricula com URL parameter
+    matricula = request.args.get("matricula")
     start = request.args.get("start")
     end = request.args.get("end")
 
-    if matricula:
-        query["AccessControllerEvent.employeeNoString"] = matricula
-
-    if start or end:
-        rango = {}
-        if start:
-            rango["$gte"] = start
-        if end:
-            rango["$lte"] = end
-        query["dateTime"] = rango
-
     eventos = mongo.db.logsAcceso.find(query, {"_id": 0})
     resultados = []
+
     for e in eventos:
-        ac = e.get("AccessControllerEvent", {})
+        externo = e.get("AccessControllerEvent", {})
+        interno = externo.get("AccessControllerEvent")
+
+        # Solo procesar si tiene estructura anidada
+        if not isinstance(interno, dict):
+            continue
+
+        # Filtrar por matrícula si se especificó
+        if matricula and interno.get("employeeNoString") != matricula:
+            continue
+
+        # Filtrar por fecha si se especificó
+        fecha = externo.get("dateTime")
+        if fecha:
+            if start and fecha < start:
+                continue
+            if end and fecha > end:
+                continue
+
         resultados.append({
-            "dateTime": e.get("dateTime"),
-            "name": ac.get("name"),
-            "employeeNoString": ac.get("employeeNoString")
+            "dateTime": fecha,
+            "name": interno.get("name"),
+            "employeeNoString": interno.get("employeeNoString")
         })
-    print("Consulta Mongo:", query)
+
     return jsonify(resultados), 200
 
 
