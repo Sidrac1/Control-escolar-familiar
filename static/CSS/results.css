@@ -3,12 +3,14 @@
   background-color: #ffffff;
   border-radius: 10px;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-  width: 90%;
-  max-width: 600px;
+  width: auto;
   padding: 20px;
-  box-sizing: border-box;
   font-family: 'Noto Sans', sans-serif;
   color: #333;
+  display: flex;
+  align-items: flex-start;
+  flex-direction: column;
+  margin-top: 20px;
 }
 
 /* Encabezado de la tarjeta */
@@ -25,6 +27,9 @@
 .card-body p {
   margin: 5px 0;
   font-size: 1em;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
 }
 
 /* Contenedor de resultados */
@@ -40,12 +45,38 @@
 
 /* Mensaje de error o vacío */
 #resultado {
+  display: none;
   font-size: 1.1em;
   font-weight: 500;
   color: #555;
   text-align: center;
   margin-top: 20px;
+  width: calc(100% - 20px);
 }
+
+#load-container{
+  display: none;
+  justify-content: center;
+  align-items: center;
+  height: auto;
+  width: 100vw;
+}
+.spinner {
+  border: 4px solid #f3f3f3; /* Light grey border */
+  border-top: 4px solid #3498db; /* Blue border on top for the spin effect */
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+
+  animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+
 
 /* Responsivo */
 @media (max-width: 768px) {
@@ -56,6 +87,9 @@
 
   .card-body p {
     font-size: 0.95em;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
   }
 }
 
@@ -73,5 +107,9 @@
 
   .card-body p {
     font-size: 0.9em;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
   }
 }
+

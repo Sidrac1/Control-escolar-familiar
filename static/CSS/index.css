@@ -66,7 +66,12 @@ input {
     flex-direction: column;
     gap: 5px;
     align-items: center;
-
+}
+#matricula_group > p{
+    width: 12pc;
+    text-align: center;
+    font-weight: bold;
+    font-size: 18px;
 }
 label {
     font-size: 1.1em;
@@ -125,6 +130,32 @@ label {
     height: 20px;
     margin-top: 5px;
     width: 26vh;
+}
+
+/*pagination controls*/
+#pagination_controls{
+    display: none;
+    align-self: center;
+}
+#prev_page, #next_page{
+    width: 10vh;
+    height: 4vh;
+    border-radius: 5px;
+    border-color: white;
+    box-shadow: 1px 1px 1px gray;
+    font-size: 15px;
+    font-style: italic;
+    font-weight: bold;
+    color: white;
+    background-color: var(--secondaryBackground);
+}
+#prev_page:hover, #next_page:hover{
+    background-color: var(--secondaryBackgroundLighter);
+    transition-duration: 0.2s;
+}
+#page_info{
+    color: black;
+    padding: 13px;
 }
 
 @media (max-width: 768px) {
