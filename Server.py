@@ -34,6 +34,7 @@ def recibir_evento():
     try:
         parsed_event = None
 
+        # Detectar si viene como multipart/form-data
         if request.content_type.startswith("multipart/form-data"):
             raw_json = request.form.get("data")
             parsed_event = json.loads(raw_json) if raw_json else dict(request.form)
@@ -43,38 +44,53 @@ def recibir_evento():
         if not parsed_event:
             return jsonify({"message": "registro vacío"}), 400
 
+        # Intentar extraer AccessControllerEvent
         evento_raw = parsed_event.get("AccessControllerEvent")
         if isinstance(evento_raw, str):
-            evento = json.loads(evento_raw)
-            parsed_event["AccessControllerEvent"] = evento
+            try:
+                evento = json.loads(evento_raw)
+                parsed_event["AccessControllerEvent"] = evento
+            except Exception:
+                mongo.db.logsOtros.insert_one(parsed_event)
+                return jsonify({"message": "evento recibido sin formato válido"}), 200
         elif isinstance(evento_raw, dict):
             evento = evento_raw
         else:
-            return jsonify({"error": "AccessControllerEvent no tiene formato válido"}), 400
+            mongo.db.logsOtros.insert_one(parsed_event)
+            return jsonify({"message": "evento recibido sin AccessControllerEvent válido"}), 200
 
+        # Intentar acceder al subobjeto interno
         evento_interno = evento.get("AccessControllerEvent")
         if not isinstance(evento_interno, dict):
-            return jsonify({"error": "AccessControllerEvent interno no encontrado"}), 400
+            mongo.db.logsOtros.insert_one(parsed_event)
+            return jsonify({"message": "evento recibido sin AccessControllerEvent interno"}), 200
 
+        # Verificar fecha
         fecha_evento = evento.get("dateTime")
         if not fecha_evento:
-            return jsonify({"error": "Falta el campo dateTime"}), 400
+            mongo.db.logsOtros.insert_one(parsed_event)
+            return jsonify({"message": "evento recibido sin fecha"}), 200
 
         try:
             fecha_evento_dt = datetime.fromisoformat(fecha_evento.replace("Z", "+00:00"))
         except Exception:
-            return jsonify({"error": "Formato de fecha inválido"}), 400
+            mongo.db.logsOtros.insert_one(parsed_event)
+            return jsonify({"message": "evento recibido con fecha inválida"}), 200
 
         hace_seis_meses = datetime.now(tz=fecha_evento_dt.tzinfo) - timedelta(days=180)
         if fecha_evento_dt < hace_seis_meses:
-            return jsonify({"message": "Evento descartado: fecha mayor a 6 meses"}), 200
+            mongo.db.logsOtros.insert_one(parsed_event)
+            return jsonify({"message": "evento descartado por antigüedad"}), 200
 
+        # Verificar tipo de evento
         try:
             major = int(evento_interno.get("majorEventType", -1))
             sub = int(evento_interno.get("subEventType", -1))
         except (ValueError, TypeError):
-            major, sub = -1, -1
+            mongo.db.logsOtros.insert_one(parsed_event)
+            return jsonify({"message": "evento recibido con tipo inválido"}), 200
 
+        # Clasificar evento
         if major == 5 and sub == 75:
             mongo.db.logsAcceso.insert_one(parsed_event)
             return jsonify({"message": "evento de acceso correcto"}), 200
@@ -83,7 +99,13 @@ def recibir_evento():
             return jsonify({"message": "evento recibido pero filtrado a otros eventos"}), 200
 
     except Exception as e:
+        # En caso de error inesperado, guardar en logsOtros
+        try:
+            mongo.db.logsOtros.insert_one(parsed_event or {"error": str(e)})
+        except:
+            pass
         return jsonify({"error": str(e)}), 400
+
 
 @app.route('/lectura', methods=['GET'])
 def mostrar_evento():
@@ -150,9 +172,6 @@ def mostrar_evento():
     ]
 
     return jsonify(resultados), 200
-
-
-
 
 if __name__ == "__main__":
     app.run(debug=True)
