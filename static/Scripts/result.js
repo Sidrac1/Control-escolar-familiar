@@ -6,6 +6,7 @@ document.getElementById("attendance_form").addEventListener("submit", (event) =>
   currentPage = 1;
   cargarPagina(currentPage);
 });
+
   document.getElementById("load-container").style.display="flex"
 document.getElementById("prev_page").addEventListener("click", () => {
   if (currentPage > 1) {
@@ -79,19 +80,16 @@ async function cargarPagina(page = 1) {
           <span class="card-date">${grupo.fecha}</span>
         </div>
         <div class="card-body">
-          ${grupo.eventos.map(ev => {
-            const [horaCompleta] = ev.dateTime.split("T");
-            const hora = horaCompleta.split(":").slice(0, 2).join(":");
-            return `
-              <p><strong>Hora:</strong> ${hora}</p>
-              <p><strong>Nombre:</strong> ${ev.name}</p>
-              <p><strong>Matrícula:</strong> ${ev.employeeNoString}</p>
-              <hr>
-            `;
-          }).join("")}
+          ${grupo.eventos.map(ev => `
+            <p><strong>Hora:</strong> ${ev.dateTime.split("T")[1].split(":").slice(0, 2).join(":")}</p>            
+            <p><strong>Nombre:</strong> ${ev.name}</p>
+            <p><strong>Matrícula:</strong> ${ev.employeeNoString}</p>
+            <hr>
+          `).join("")}
         </div>
       `;
       container.appendChild(div);
+
     });
 
     document.getElementById("page_info").textContent = `Página ${page}`;
