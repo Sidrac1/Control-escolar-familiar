@@ -138,8 +138,8 @@ label {
     align-self: center;
 }
 #prev_page, #next_page{
-    width: 10vh;
-    height: 4vh;
+    width: auto;
+    height: 5vh;
     border-radius: 5px;
     border-color: white;
     box-shadow: 1px 1px 1px gray;
@@ -148,6 +148,7 @@ label {
     font-weight: bold;
     color: white;
     background-color: var(--secondaryBackground);
+    padding: 10px;
 }
 #prev_page:hover, #next_page:hover{
     background-color: var(--secondaryBackgroundLighter);
@@ -156,6 +157,9 @@ label {
 #page_info{
     color: black;
     padding: 13px;
+    font-family: sans-serif;
+    font-weight: 600;
+    margin-top: -5px;
 }
 
 @media (max-width: 768px) {

@@ -141,6 +141,10 @@ def mostrar_evento():
         "AccessControllerEvent.AccessControllerEvent.employeeNoString": 1
     }
 
+    #conteo de documentos que se encontraron con el query:
+    total= mongo.db.logsAcceso.count_documents(query)
+
+    #paginación
     eventos = mongo.db.logsAcceso.find(query, projection).skip(skip).limit(limit)
     agrupados = defaultdict(list)
 
@@ -171,7 +175,10 @@ def mostrar_evento():
         for fecha, eventos in sorted(agrupados.items())
     ]
 
-    return jsonify(resultados), 200
+    return jsonify({
+        "data": resultados,
+        "total": total
+    }), 200
 
 if __name__ == "__main__":
     app.run(debug=True)

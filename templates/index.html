@@ -8,7 +8,13 @@
   <link rel="stylesheet" href="{{url_for('static', filename='CSS/index.css')}}">
   <link rel="stylesheet" href="{{url_for('static', filename='CSS/themes.css')}}">
   <link rel="stylesheet" href="{{url_for('static', filename='CSS/results.css')}}">
+
   <script type="module" src="{{url_for('static', filename='Scripts/result.js')}}"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script type="module" src="{{url_for('static',filename='Scripts/pdfSave.js')}}"></script>
+
 </head>
 <body>
   <div id="header_area">
@@ -52,9 +58,15 @@
     </div>
 
     <div id="pagination_controls">
-      <button id="prev_page">Anterior</button>
-      <span id="page_info">Página 1</span>
-      <button id="next_page">Siguiente</button>
+      <a href="#header_area"> <!--link para envíar a la parte superior de la página-->
+        <button id="prev_page">Anterior</button>
+      </a>
+
+      <span id="page_info"></span>
+
+      <a href="#header_area"> <!--link para envíar a la parte superior de la página-->
+        <button id="next_page">Siguiente</button>
+      </a>
     </div>
   </div>
 </body>

@@ -8,9 +8,15 @@
   font-family: 'Noto Sans', sans-serif;
   color: #333;
   display: flex;
-  align-items: flex-start;
   flex-direction: column;
   margin-top: 20px;
+}
+/*estilos SOLAMENTE PARA EL PDF!!!!!*/
+.pdf-mode .result-card{
+  border: 1px solid black;
+  font-size: 12px;
+  padding: 5px;
+  page-break-inside: avoid;
 }
 
 /* Encabezado de la tarjeta */
@@ -29,7 +35,12 @@
   font-size: 1em;
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
+  padding-right: 30px;
+}
+.card-body{
+  display: flex;
+  flex-direction: row;
+  padding: 30px;
 }
 
 /* Contenedor de resultados */
