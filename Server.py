@@ -116,7 +116,7 @@ def mostrar_evento():
     matricula = request.args.get("matricula")
     start = request.args.get("start")
     end = request.args.get("end")
-    limit = int(request.args.get("limit", 100))
+    limit = int(request.args.get("limit", 10000))
     skip = int(request.args.get("skip", 0))
 
     # Convertir fechas

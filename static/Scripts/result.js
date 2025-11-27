@@ -31,6 +31,7 @@ async function cargarPagina(page = 1) {
   // Validaciones para la matrícula
   if (
     matricula.toString().length < 10 ||
+    matricula.toString().length > 10 ||
     matricula.length > 10 ||
     isNaN(matricula) ||
     Number(matricula) < 0
