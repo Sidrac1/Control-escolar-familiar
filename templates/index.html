@@ -3,12 +3,22 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Consulta asistencia</title>
+  <title>Consulta de Asistencia</title>
 
   <link rel="stylesheet" href="{{url_for('static', filename='CSS/index.css')}}">
   <link rel="stylesheet" href="{{url_for('static', filename='CSS/themes.css')}}">
   <link rel="stylesheet" href="{{url_for('static', filename='CSS/results.css')}}">
+
+  <!-- Generación de PDF vectorial (texto real, no captura de pantalla) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
+
+  <!-- Generación de Excel -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
   <script type="module" src="{{url_for('static', filename='Scripts/result.js')}}"></script>
+  <script type="module" src="{{url_for('static', filename='Scripts/pdfSave.js')}}"></script>
+  <script type="module" src="{{url_for('static', filename='Scripts/excelSave.js')}}"></script>
 </head>
 <body>
   <div id="header_area">
@@ -19,32 +29,58 @@
   <div id="main_content">
     <div id="search_container">
       <h1 id="search_title">Búsqueda de Asistencias</h1>
+      <p id="search_subtitle">Consulta los registros de entrada y salida por matrícula y rango de fechas.</p>
+
       <form id="attendance_form">
         <div class="input-groups">
           <div id="matricula_group">
-            <label for="matricula">Matrícula del alumno:</label>
-            <input type="text" id="matricula" name="matricula" placeholder="Matrícula del alumno" class="form_field">
+            <label for="matricula"><span class="icon"></span> Matrícula del alumno</label>
+            <input type="text" id="matricula" name="matricula" placeholder="Ej. 2025123456" class="form_field" inputmode="numeric" required>
+            <p class="field-hint">10 dígitos numéricos</p>
           </div>
           <div id="date_filter_group">
             <div id="start_group">
-              <label for="start_date">Fecha de inicio:</label>
+              <label for="start_date"><span class="icon"></span> Fecha de inicio</label>
               <input type="date" id="start_date" name="start_date" class="form_field">
             </div>
             <div id="end_group">
-              <label for="end_date">Fecha de fin:</label>
+              <label for="end_date"><span class="icon"></span> Fecha de fin</label>
               <input type="date" id="end_date" name="end_date" class="form_field">
             </div>
           </div>
         </div>
         <div id="buttons_container">
           <button type="submit" id="submit_button">Buscar Asistencias</button>
-          <button type="button" id="test_button">Testear datos desde Cona</button>
+          <button type="button" id="clear_button">✕ Limpiar</button>
+          <button type="button" id="download_pdf_button" disabled>⬇ PDF</button>
+          <button type="button" id="download_excel_button" disabled>⬇ Excel</button>
         </div>
       </form>
     </div>
 
+    <div id="summary_bar">
+      <span id="summary_text"></span>
+    </div>
+
     <div id="results_container">
       <pre id="resultado">Esperando datos...</pre>
+    </div>
+
+    <div id="load-container">
+      <div class="spinner"></div>
+      <span class="loading-text">Buscando registros…</span>
+    </div>
+
+    <div id="pagination_controls">
+      <a href="#header_area">
+        <button id="prev_page">‹ Anterior</button>
+      </a>
+
+      <span id="page_info"></span>
+
+      <a href="#header_area">
+        <button id="next_page">Siguiente ›</button>
+      </a>
     </div>
   </div>
 </body>

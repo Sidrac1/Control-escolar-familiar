@@ -1,24 +1,271 @@
-/* Contenedor de las tarjetas */
+/* Contenedor de resultados */
 #results_container {
-    display: flex;
+    display: none;
     flex-direction: column;
-    gap: 20px;
     align-items: center;
+    gap: 16px;
+    padding: 20px;
     width: 100%;
-    margin-top: 20px;
+    box-sizing: border-box;
 }
 
+/* Tarjeta por día */
+.result-card {
+    background-color: #ffffff;
+    border-radius: var(--card-radius);
+    box-shadow: var(--shadow-sm);
+    width: 100%;
+    max-width: 900px;
+    padding: 0;
+    font-family: 'Noto Sans', sans-serif;
+    color: var(--text);
+    overflow: hidden;
+    transition: box-shadow 0.2s;
+}
 
-#resultado{
-    color: black;
-    background-color: white;
+.result-card:hover {
+    box-shadow: var(--shadow-md);
+}
+
+/* Encabezado de la tarjeta (fecha) */
+.card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 20px;
+    background-color: var(--secondaryBackground);
+    color: white;
+}
+
+.card-date {
+    font-weight: 700;
+    font-size: 1.05em;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.card-count {
+    font-size: 0.8em;
+    font-weight: 500;
+    opacity: 0.85;
+}
+
+/* Cuerpo de la tarjeta */
+.card-body {
+    display: flex;
+    flex-direction: column;
+    padding: 16px 20px;
+    gap: 10px;
+}
+
+/* Fila de registro individual (entrada / salida) */
+.record-row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 10px 12px;
+    border-radius: 8px;
+    background-color: #fafafa;
+}
+
+.record-time {
+    font-size: 1.1em;
+    font-weight: 700;
+    min-width: 62px;
+    color: var(--text);
+}
+
+.record-info {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    gap: 2px;
+}
+
+.record-name {
+    font-weight: 600;
+    font-size: 0.95em;
+}
+
+.record-matricula {
+    font-size: 0.82em;
+    color: var(--textMuted);
+}
+
+/* Etiquetas (badges) por tipo de registro */
+.badge {
+    font-size: 0.72em;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    padding: 4px 10px;
+    border-radius: 999px;
+    white-space: nowrap;
+}
+
+.badge-entrada {
+    color: var(--entrada);
+    background-color: var(--entradaBg);
+}
+
+.badge-salida {
+    color: var(--salida);
+    background-color: var(--salidaBg);
+}
+
+.badge-adicional {
+    color: var(--adicional);
+    background-color: var(--adicionalBg);
+}
+
+.badge-unico {
+    color: var(--adicional);
+    background-color: var(--adicionalBg);
+}
+
+/* Aviso de único registro (sin par de entrada/salida) */
+.single-record-note {
+    font-size: 0.8em;
+    color: var(--adicional);
+    background-color: var(--adicionalBg);
+    padding: 8px 12px;
+    border-radius: 8px;
+    margin: 0;
+}
+
+/* Registros adicionales colapsables (posibles duplicados / errores de marcaje) */
+.extra-records {
+    border: 1px dashed #d8cfae;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.extra-records summary {
+    cursor: pointer;
+    padding: 10px 12px;
+    font-size: 0.85em;
+    font-weight: 600;
+    color: var(--adicional);
+    background-color: var(--adicionalBg);
+    list-style: none;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.extra-records summary::-webkit-details-marker {
+    display: none;
+}
+
+.extra-records summary::before {
+    content: "▸";
+    display: inline-block;
+    transition: transform 0.15s;
+}
+
+.extra-records[open] summary::before {
+    transform: rotate(90deg);
+}
+
+.extra-records .record-row {
+    border-top: 1px solid #f0e9d4;
+    border-radius: 0;
+    background-color: #fffdf6;
+}
+
+/* Estado vacío / mensaje informativo */
+#resultado {
+    display: none;
+    font-size: 1.05em;
+    font-weight: 500;
+    color: var(--textMuted);
+    text-align: center;
+    margin-top: 10px;
     width: calc(100% - 20px);
+    max-width: 500px;
+}
+
+.empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    padding: 30px 20px;
+    background-color: #ffffff;
+    border-radius: var(--card-radius);
+    box-shadow: var(--shadow-sm);
+}
+
+.empty-state .empty-icon {
+    font-size: 2.4em;
+}
+
+.empty-state .empty-title {
+    font-weight: 700;
+    color: var(--text);
+}
+
+.empty-state .empty-subtitle {
+    font-size: 0.85em;
+    color: var(--textMuted);
+}
+
+/* Carga */
+#load-container {
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
     height: auto;
-    padding: 20px;
+    width: 100vw;
+    padding: 30px 0;
+}
+
+.spinner {
+    border: 4px solid #f3f3f3;
+    border-top: 4px solid var(--secondaryBackground);
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    animation: spin 1s linear infinite;
+}
+
+.loading-text {
+    font-size: 0.85em;
+    color: var(--textMuted);
+    font-family: sans-serif;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Responsivo */
+@media (max-width: 768px) {
+    .card-body {
+        padding: 12px 14px;
+    }
+
+    .record-row {
+        flex-wrap: wrap;
+    }
+
+    .record-time {
+        min-width: 50px;
+    }
 }
 
 @media (max-width: 480px) {
-    .result-card {
-        padding: 10px;
+    .card-header {
+        padding: 10px 14px;
+    }
+
+    .record-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 6px;
     }
 }

@@ -1,10 +1,27 @@
 :root{
-    /*fondos*/
+    /* fondos */
     --background: #fff8eb;
     --secondaryBackground: #1e5b4f;
+    --secondaryBackgroundLighter: #43c4aa;
     --result: #a57f2c;
-    
-    /*fuentes*/
-    --title: #FFFFFF;
 
+    /* fuentes */
+    --title: #FFFFFF;
+    --text: #2b2b2b;
+    --textMuted: #6b6b6b;
+
+    /* estados de registro (entrada / salida / adicional) */
+    --entrada: #1e5b4f;
+    --entradaBg: #e3f3ef;
+    --salida: #2f6fa7;
+    --salidaBg: #e7f1fa;
+    --adicional: #b3781c;
+    --adicionalBg: #fdf1de;
+    --danger: #b3261e;
+    --dangerBg: #fdecea;
+
+    /* utilidades */
+    --card-radius: 12px;
+    --shadow-sm: 0 1px 3px rgba(0,0,0,0.08);
+    --shadow-md: 0 4px 14px rgba(0,0,0,0.10);
 }
